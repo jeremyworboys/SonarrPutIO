@@ -9,6 +9,9 @@ class Downloader
     /** @var \PutIO\API */
     private $putio;
 
+    /** @var \JeremyWorboys\SonarrPutIO\Download\LinkFinder */
+    private $finder;
+
     /** @var string */
     private $root;
 
@@ -21,6 +24,7 @@ class Downloader
     public function __construct(API $putio, string $root)
     {
         $this->putio = $putio;
+        $this->finder = new LinkFinder($putio);
         $this->root = $root;
     }
 
@@ -28,8 +32,17 @@ class Downloader
      */
     public function run()
     {
-        foreach ($this->putio->files->listall() as $item) {
-            $this->download($this->root, $item['id']);
+        $expected = $this->readTransfersList();
+        $uploaded = $this->putio->files->listall();
+
+        foreach ($expected as $i => $name) {
+            foreach ($uploaded as $item) {
+                if ($item['name'] === $name) {
+                    $this->download($this->root, $item['id']);
+                    unset($expected[$i]);
+                    $this->writeTransfersList($expected);
+                }
+            }
         }
     }
 
@@ -39,24 +52,8 @@ class Downloader
      */
     private function download(string $path, int $id)
     {
-        $item = $this->putio->files->info($id);
+        $links = $this->finder->getDownloadLinks($id, true);
 
-        if ($item['content_type'] === 'text/plain') {
-            return;
-        } elseif ($item['content_type'] === 'application/x-directory') {
-            $path .= '/' . $item['name'];
-            $this->downloadDirectory($path, $id);
-        } else {
-            $this->downloadFile($path, $id);
-        }
-    }
-
-    /**
-     * @param string $path
-     * @param int    $id
-     */
-    private function downloadFile(string $path, int $id)
-    {
         $downloaderPath = __DIR__ . '/../../download/download-' . $id . '.php';
         if (file_exists($downloaderPath)) {
             return;
@@ -64,9 +61,9 @@ class Downloader
 
         $downloaderTemplate = file_get_contents(__DIR__ . '/template.txt');
         $downloaderTemplate = strtr($downloaderTemplate, [
-            '{{id}}'        => $id,
-            '{{path}}'      => $path,
-            '{{download}}'  => $this->putio->files->getDownloadURL($id),
+            '{{id}}'    => $id,
+            '{{path}}'  => $path,
+            '{{links}}' => json_encode($links),
         ]);
 
         $logPath = __DIR__ . '/../../logs/download-' . $id . '.log';
@@ -76,20 +73,24 @@ class Downloader
     }
 
     /**
-     * @param string $path
-     * @param int    $id
+     * @return array
      */
-    private function downloadDirectory(string $path, int $id)
+    private function readTransfersList()
     {
-        $files = $this->putio->files->listall($id);
+        $contents = file_get_contents(__DIR__ . '/../../transfers.txt');
+        $lines = explode("\n", $contents);
+        $lines = array_map('trim', $lines);
+        $lines = array_filter($lines);
 
-        if (count($files) === 0) {
-            $this->putio->files->delete($id);
-            return;
-        }
+        return $lines;
+    }
 
-        foreach ($files as $item) {
-            $this->download($path, $item['id']);
-        }
+    /**
+     * @param array $transfers
+     */
+    private function writeTransfersList(array $transfers)
+    {
+        $contents = implode("\n", $transfers);
+        file_put_contents(__DIR__ . '/../../transfers.txt', $contents);
     }
 }

@@ -6,26 +6,11 @@ $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);
 
 system("mkdir -p '{{path}}'");
-system("aria2c -x 10 -s 10 -d '{{path}}' '{{download}}'");
 
-unlink(__FILE__);
-
-function cleanupDirectory($id) {
-    if ($id === 0) {
-        return;
-    }
-
-    $item = $this->putio->files->info($id);
-    if ($item['content_type'] === 'application/x-directory') {
-        $children = $this->putio->files->listall($id);
-        if (count($children) === 0) {
-            $putio->files->delete($id);
-            cleanupDirectory($item['parent_id']);
-        }
-    }
+$links = json_decode('{{links}}', true);
+foreach ($links as $link) {
+    system("aria2c -x 10 -s 10 -d '{{path}}' '$link'");
 }
 
-
-$item = $this->putio->files->info({{id}});
+unlink(__FILE__);
 $putio->files->delete({{id}});
-cleanupDirectory($item['parent_id']);
