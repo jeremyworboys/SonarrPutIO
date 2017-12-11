@@ -1,0 +1,65 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "ec50210609c3d0b710a431720de51903",
+    "packages": [
+        {
+            "name": "nicoswd/putio",
+            "version": "0.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nicoSWD/put.io-api-v2.git",
+                "reference": "d33ea3ed46e4bfc0355de8225dbd61a723cdb32a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nicoSWD/put.io-api-v2/zipball/d33ea3ed46e4bfc0355de8225dbd61a723cdb32a",
+                "reference": "d33ea3ed46e4bfc0355de8225dbd61a723cdb32a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Oelgart",
+                    "homepage": "https://nicoswd.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP 5.4 wrapper for PutIO's OAuth API (v2)",
+            "homepage": "https://github.com/nicoSWD/put.io-api-v2",
+            "keywords": [
+                "api",
+                "bittorrent",
+                "cloud",
+                "put.io",
+                "putio",
+                "storage",
+                "torrent"
+            ],
+            "time": "2015-02-19T19:36:51+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

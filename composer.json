@@ -1,0 +1,19 @@
+{
+    "name": "jeremyworboys/sonarr-put-io",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeremy Worboys",
+            "email": "jw@jeremyworboys.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "JeremyWorboys\\SonarrPutIO\\": "src/"
+        }
+    },
+    "require": {
+        "nicoswd/putio": "^0.3.1"
+    }
+}
