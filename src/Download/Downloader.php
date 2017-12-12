@@ -42,9 +42,9 @@ class Downloader
         $uploaded = $this->putio->files->listall();
 
         foreach ($expected as $i => $name) {
-            foreach ($uploaded as $item) {
-                if ($item['name'] === $name) {
-                    $this->download($item['id']);
+            foreach ($uploaded as $file) {
+                if ($file['name'] === $name) {
+                    $this->download($file);
                     unset($expected[$i]);
                     $this->writeTransfersList($expected);
                 }
@@ -53,11 +53,11 @@ class Downloader
     }
 
     /**
-     * @param int $id
+     * @param array $file
      */
-    private function download(int $id)
+    private function download(array $file)
     {
-        $links = $this->finder->getDownloadLinks($id, true);
+        $links = $this->finder->getDownloadLinks($file['id'], true);
 
         $this->psd->launchApp();
         foreach ($links as $link) {
