@@ -6,6 +6,8 @@ use JeremyWorboys\SonarrPutIO\Events\DownloadParameters;
 use JeremyWorboys\SonarrPutIO\Events\GrabParameters;
 use JeremyWorboys\SonarrPutIO\Events\Parameters;
 use JeremyWorboys\SonarrPutIO\Events\RenameParameters;
+use JeremyWorboys\SonarrPutIO\Model\Transfer;
+use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 use PutIO\API;
 
 class Process
@@ -16,15 +18,20 @@ class Process
     /** @var \JeremyWorboys\SonarrPutIO\TorrentUploader */
     private $uploader;
 
+    /** @var \JeremyWorboys\SonarrPutIO\Model\TransferRepository */
+    private $transfers;
+
     /**
      * Process constructor.
      *
-     * @param \PutIO\API $putio
+     * @param \PutIO\API                                          $putio
+     * @param \JeremyWorboys\SonarrPutIO\Model\TransferRepository $transfers
      */
-    public function __construct(API $putio)
+    public function __construct(API $putio, TransferRepository $transfers)
     {
         $this->putio = $putio;
         $this->uploader = new TorrentUploader($putio);
+        $this->transfers = $transfers;
     }
 
     /**
@@ -166,11 +173,11 @@ class Process
     }
 
     /**
-     * @param array $transfer
+     * @param array $info
      */
-    private function appendTransferToList(array $transfer)
+    private function appendTransferToList(array $info)
     {
-        $transferName = preg_replace('~\.torrent$~', '', $transfer['name']);
-        file_put_contents(__DIR__ . '/../transfers.txt', $transferName . PHP_EOL, FILE_APPEND);
+        $transfer = new Transfer($info['id'], $info['name']);
+        $this->transfers->add($transfer);
     }
 }
