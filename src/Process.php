@@ -90,7 +90,7 @@ class Process
     {
         $magnet = file_get_contents($filename);
         $transfer = $this->putio->transfers->add($magnet);
-        $this->appendTransferToList($transfer['name']);
+        $this->appendTransferToList($transfer['transfer']['name']);
     }
 
     /**
