@@ -16,17 +16,22 @@ class Downloader
     /** @var \JeremyWorboys\SonarrPutIO\Download\LinkFinder */
     private $finder;
 
+    /** @var string */
+    private $root;
+
     /**
      * Downloader constructor.
      *
      * @param \JeremyWorboys\SonarrPutIO\ProgressiveDownloader $psd
      * @param \PutIO\API                                       $putio
+     * @param string                                           $root
      */
-    public function __construct(ProgressiveDownloader $psd, API $putio)
+    public function __construct(ProgressiveDownloader $psd, API $putio, string $root)
     {
         $this->psd = $psd;
         $this->putio = $putio;
         $this->finder = new LinkFinder($putio);
+        $this->root = $root;
     }
 
     /**

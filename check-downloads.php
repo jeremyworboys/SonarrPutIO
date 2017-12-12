@@ -11,5 +11,6 @@ $psd = new ProgressiveDownloader();
 $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);
 
-$downloader = new Downloader($psd, $putio);
+$root = '/Users/jeremyworboys/Downloads/Media';
+$downloader = new Downloader($psd, $putio, $root);
 $downloader->run();
