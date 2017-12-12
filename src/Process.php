@@ -90,7 +90,7 @@ class Process
     {
         $magnet = file_get_contents($filename);
         $transfer = $this->putio->transfers->add($magnet);
-        $this->appendTransferToList($transfer['transfer']['name']);
+        $this->appendTransferToList($transfer['transfer']);
     }
 
     /**
@@ -99,7 +99,7 @@ class Process
     private function handleTorrentGrabRequest(string $filename)
     {
         $transfer = $this->uploader->uploadTorrentFile($filename);
-        $this->appendTransferToList($transfer['name']);
+        $this->appendTransferToList($transfer);
     }
 
     /**
@@ -166,11 +166,11 @@ class Process
     }
 
     /**
-     * @param string $transferName
+     * @param array $transfer
      */
-    private function appendTransferToList(string $transferName)
+    private function appendTransferToList(array $transfer)
     {
-        $transferName = preg_replace('~\.torrent$~', '', $transferName);
+        $transferName = preg_replace('~\.torrent$~', '', $transfer['name']);
         file_put_contents(__DIR__ . '/../transfers.txt', $transferName . PHP_EOL, FILE_APPEND);
     }
 }
