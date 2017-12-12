@@ -71,7 +71,7 @@ class Downloader
     private function readTransfersList()
     {
         $contents = file_get_contents(__DIR__ . '/../../transfers.txt');
-        $lines = explode("\n", $contents);
+        $lines = explode(PHP_EOL, $contents);
         $lines = array_map('trim', $lines);
         $lines = array_filter($lines);
 
@@ -83,7 +83,7 @@ class Downloader
      */
     private function writeTransfersList(array $transfers)
     {
-        $contents = implode("\n", $transfers);
+        $contents = implode(PHP_EOL, $transfers) . PHP_EOL;
         file_put_contents(__DIR__ . '/../../transfers.txt', $contents);
     }
 }
