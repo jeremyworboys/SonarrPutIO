@@ -101,12 +101,65 @@ class Process
     /**
      * @param \JeremyWorboys\SonarrPutIO\Events\DownloadParameters $params
      */
-    private function handleDownloadRequest(DownloadParameters $params) { }
+    private function handleDownloadRequest(DownloadParameters $params)
+    {
+        $downloads = $this->readDownloadsList();
+
+        foreach ($downloads as $parentId => $files) {
+            $lastFile = count($files) === 1;
+            $pathFound = array_search($params->getEpisodeFileSourcePath(), $files, true);
+
+            if ($pathFound && $lastFile) {
+                $this->putio->files->delete($parentId);
+            }
+
+            if ($pathFound) {
+                unset($downloads[$parentId]);
+                $this->writeDownloadsList($downloads);
+                break;
+            }
+        }
+    }
 
     /**
      * @param \JeremyWorboys\SonarrPutIO\Events\RenameParameters $params
      */
     private function handleRenameRequest(RenameParameters $params) { }
+
+    /**
+     * @return array
+     */
+    private function readDownloadsList()
+    {
+        $contents = file_get_contents(__DIR__ . '/../downloads.txt');
+        $lines = explode(PHP_EOL, $contents);
+        $lines = array_map('trim', $lines);
+        $lines = array_filter($lines);
+
+        $data = [];
+        foreach ($lines as $line) {
+            [$parentId, $path] = explode("\t", $line);
+            $data[$parentId][] = $path;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $downloads
+     */
+    private function writeDownloadsList(array $downloads)
+    {
+        $lines = [];
+        foreach ($downloads as $parentId => $files) {
+            foreach ($files as $fileId => $path) {
+                $lines[] = $parentId . "\t" . $path;
+            }
+        }
+
+        $contents = implode(PHP_EOL, $lines) . PHP_EOL;
+        file_put_contents(__DIR__ . '/../downloads.txt', $contents);
+    }
 
     /**
      * @param string $transferName
