@@ -13,6 +13,9 @@ class Process
     /** @var \PutIO\API */
     private $putio;
 
+    /** @var \JeremyWorboys\SonarrPutIO\TorrentUploader */
+    private $uploader;
+
     /**
      * Process constructor.
      *
@@ -21,6 +24,7 @@ class Process
     public function __construct(API $putio)
     {
         $this->putio = $putio;
+        $this->uploader = new TorrentUploader($putio);
     }
 
     /**
@@ -94,7 +98,7 @@ class Process
      */
     private function handleTorrentGrabRequest(string $filename)
     {
-        $transfer = $this->putio->files->upload($filename);
+        $transfer = $this->uploader->uploadTorrentFile($filename);
         $this->appendTransferToList($transfer['name']);
     }
 
