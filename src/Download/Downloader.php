@@ -71,10 +71,14 @@ class Downloader
         foreach ($links as $link) {
             if (preg_match('~/files/(\d+)/download~', $link, $matches)) {
                 $file = $this->putio->files->info($matches[1]);
-                if ($file['size'] > self::MIN_FILE_SIZE) {
-                    $this->psd->addTask($link);
-                    $this->appendDownloadList((int) $parent['id'], $file);
+
+                if ($file['size'] < self::MIN_FILE_SIZE) {
+                    echo 'Skipping ' . $file['name'] . ' due to filesize.' . PHP_EOL;
+                    continue;
                 }
+
+                $this->psd->addTask($link);
+                $this->appendDownloadList((int) $parent['id'], $file);
             }
         }
     }
