@@ -7,7 +7,7 @@ use PutIO\API;
 
 class Downloader
 {
-    private const MIN_FILE_SIZE = 100000000; // 100 MB
+    private const MIN_FILE_SIZE = 10000000; // 10 MB
 
     /** @var \JeremyWorboys\SonarrPutIO\ProgressiveDownloader */
     private $psd;
