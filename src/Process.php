@@ -110,17 +110,17 @@ class Process
         $downloads = $this->readDownloadsList();
 
         foreach ($downloads as $parentId => $files) {
-            $lastFile = count($files) === 1;
-            $pathFound = in_array($params->getEpisodeFileSourcePath(), $files, true);
+            $index = array_search($params->getEpisodeFileSourcePath(), $files, true);
 
-            if ($pathFound && $lastFile) {
-                $this->putio->files->delete($parentId);
-            }
+            if ($index !== false) {
+                unset($downloads[$parentId][$index]);
 
-            if ($pathFound) {
-                unset($downloads[$parentId]);
+                if (count($downloads[$parentId]) === 0) {
+                    unset($downloads[$parentId]);
+                    $this->putio->files->delete($parentId);
+                }
+
                 $this->writeDownloadsList($downloads);
-                break;
             }
         }
     }
