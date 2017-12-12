@@ -170,6 +170,7 @@ class Process
      */
     private function appendTransferToList(string $transferName)
     {
+        $transferName = preg_replace('~\.torrent$~', '', $transferName);
         file_put_contents(__DIR__ . '/../transfers.txt', $transferName . PHP_EOL, FILE_APPEND);
     }
 }
