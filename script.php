@@ -4,7 +4,7 @@
 use JeremyWorboys\SonarrPutIO\Events\Parameters;
 use JeremyWorboys\SonarrPutIO\Process;
 
-$logFile = __DIR__ . '/logs/log-' . time() . '.json';
+$logFile = __DIR__ . '/logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
 $logData = [];
 foreach ($_SERVER as $key => $value) {
     if (strpos($key, 'sonarr_') === 0) {
