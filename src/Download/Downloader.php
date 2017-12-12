@@ -7,6 +7,8 @@ use PutIO\API;
 
 class Downloader
 {
+    private const MIN_FILE_SIZE = 100000000; // 100 MB
+
     /** @var \JeremyWorboys\SonarrPutIO\ProgressiveDownloader */
     private $psd;
 
@@ -53,17 +55,20 @@ class Downloader
     }
 
     /**
-     * @param array $file
+     * @param array $parent
      */
-    private function download(array $file)
+    private function download(array $parent)
     {
-        $links = $this->finder->getDownloadLinks($file['id'], true);
+        $links = $this->finder->getDownloadLinks($parent['id'], true);
 
         $this->psd->launchApp();
         foreach ($links as $link) {
             if (preg_match('~/files/(\d+)/download~', $link, $matches)) {
-                $this->psd->addTask($link);
-                $this->appendDownloadList((int) $file['id'], (int) $matches[1]);
+                $file = $this->putio->files->info($matches[1]);
+                if ($file['size'] > self::MIN_FILE_SIZE) {
+                    $this->psd->addTask($link);
+                    $this->appendDownloadList((int) $parent['id'], $file);
+                }
             }
         }
     }
@@ -91,12 +96,11 @@ class Downloader
     }
 
     /**
-     * @param int $parentId
-     * @param int $fileId
+     * @param int   $parentId
+     * @param array $file
      */
-    private function appendDownloadList(int $parentId, int $fileId)
+    private function appendDownloadList(int $parentId, array $file)
     {
-        $file = $this->putio->files->info($fileId);
         $path = $this->root . '/' . $file['name'];
 
         $contents = $parentId . "\t" . $path . PHP_EOL;
