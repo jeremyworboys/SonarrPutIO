@@ -230,7 +230,6 @@ class ProgressiveDownloader
             CURLOPT_POSTFIELDS     => $body,
         ];
 
-        echo 'Request: POST ' . $url . '(' . $body . ')' . PHP_EOL;
         $ch = curl_init($url);
         curl_setopt_array($ch, $options);
         $response = curl_exec($ch);
