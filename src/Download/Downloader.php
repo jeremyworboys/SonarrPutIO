@@ -61,7 +61,10 @@ class Downloader
 
         $this->psd->launchApp();
         foreach ($links as $link) {
-            $this->psd->addTask($link);
+            if (preg_match('~/files/(\d+)/download~', $link, $matches)) {
+                $this->psd->addTask($link);
+                $this->appendDownloadList((int) $file['id'], (int) $matches[1]);
+            }
         }
     }
 
@@ -85,5 +88,18 @@ class Downloader
     {
         $contents = implode(PHP_EOL, $transfers) . PHP_EOL;
         file_put_contents(__DIR__ . '/../../transfers.txt', $contents);
+    }
+
+    /**
+     * @param int $parentId
+     * @param int $fileId
+     */
+    private function appendDownloadList(int $parentId, int $fileId)
+    {
+        $file = $this->putio->files->info($fileId);
+        $path = $this->root . '/' . $file['name'];
+
+        $contents = $parentId . "\t" . $path . PHP_EOL;
+        file_put_contents(__DIR__ . '/../../downloads.txt', $contents, FILE_APPEND);
     }
 }
