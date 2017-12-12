@@ -8,6 +8,9 @@ class DownloadParameters extends Parameters
     private $seriesId;
 
     /** @var string|null */
+    private $seriesPath;
+
+    /** @var string|null */
     private $seriesTitle;
 
     /** @var string|null */
@@ -59,7 +62,58 @@ class DownloadParameters extends Parameters
     private $releaseReleaseGroup;
 
     /** @var string|null */
+    private $episodeFileEpisodeAirDates;
+
+    /** @var string|null */
+    private $episodeFileEpisodeAirDatesUTC;
+
+    /** @var string|null */
+    private $episodeFileEpisodeCount;
+
+    /** @var string|null */
+    private $episodeFileEpisodeNumbers;
+
+    /** @var string|null */
+    private $episodeFileEpisodeTitles;
+
+    /** @var string|null */
+    private $episodeFileId;
+
+    /** @var string|null */
+    private $episodeFilePath;
+
+    /** @var string|null */
+    private $episodeFileQuality;
+
+    /** @var string|null */
+    private $episodeFileQualityVersion;
+
+    /** @var string|null */
+    private $episodeFileRelativePath;
+
+    /** @var string|null */
+    private $episodeFileReleaseGroup;
+
+    /** @var string|null */
+    private $episodeFileSceneName;
+
+    /** @var string|null */
+    private $episodeFileSeasonNumber;
+
+    /** @var string|null */
+    private $episodeFileSourceFolder;
+
+    /** @var string|null */
+    private $episodeFileSourcePath;
+
+    /** @var string|null */
     private $downloadId;
+
+    /** @var string|null */
+    private $downloadClient;
+
+    /** @var string|null */
+    private $isUpgrade;
 
     /**
      * Internal ID of the series
@@ -69,6 +123,14 @@ class DownloadParameters extends Parameters
     public function getSeriesId()
     {
         return $this->seriesId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSeriesPath()
+    {
+        return $this->seriesPath;
     }
 
     /**
@@ -242,6 +304,126 @@ class DownloadParameters extends Parameters
     }
 
     /**
+     * @return string|null
+     */
+    public function getEpisodeFileEpisodeAirDates()
+    {
+        return $this->episodeFileEpisodeAirDates;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileEpisodeAirDatesUTC()
+    {
+        return $this->episodeFileEpisodeAirDatesUTC;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileEpisodeCount()
+    {
+        return $this->episodeFileEpisodeCount;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileEpisodeNumbers()
+    {
+        return $this->episodeFileEpisodeNumbers;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileEpisodeTitles()
+    {
+        return $this->episodeFileEpisodeTitles;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileId()
+    {
+        return $this->episodeFileId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFilePath()
+    {
+        return $this->episodeFilePath;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileQuality()
+    {
+        return $this->episodeFileQuality;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileQualityVersion()
+    {
+        return $this->episodeFileQualityVersion;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileRelativePath()
+    {
+        return $this->episodeFileRelativePath;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileReleaseGroup()
+    {
+        return $this->episodeFileReleaseGroup;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileSceneName()
+    {
+        return $this->episodeFileSceneName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileSeasonNumber()
+    {
+        return $this->episodeFileSeasonNumber;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileSourceFolder()
+    {
+        return $this->episodeFileSourceFolder;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEpisodeFileSourcePath()
+    {
+        return $this->episodeFileSourcePath;
+    }
+
+    /**
      * 1 is the default, 2 for proper, 3+ could be used for anime versions
      *
      * @return string|null
@@ -252,11 +434,30 @@ class DownloadParameters extends Parameters
     }
 
     /**
+     * @return string|null
+     */
+    public function getDownloadClient()
+    {
+        return $this->downloadClient;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function isUpgrade()
+    {
+        return $this->isUpgrade;
+    }
+
+
+
+    /**
      * @param array $params
      */
     protected function fill(array $params): void
     {
         $this->seriesId = $params['sonarr_series_id'] ?? null;
+        $this->seriesPath = $params['sonarr_series_path'] ?? null;
         $this->seriesTitle = $params['sonarr_series_title'] ?? null;
         $this->seriesTvdbId = $params['sonarr_series_tvdbid'] ?? null;
         $this->seriesTvmazeId = $params['sonarr_series_tvmazeid'] ?? null;
@@ -274,6 +475,23 @@ class DownloadParameters extends Parameters
         $this->releaseQuality = $params['sonarr_release_quality'] ?? null;
         $this->releaseQualityVersion = $params['sonarr_release_qualityversion'] ?? null;
         $this->releaseReleaseGroup = $params['sonarr_release_releasegroup'] ?? null;
+        $this->episodeFileEpisodeAirDates = $params['sonarr_episodefile_episodeairdates'] ?? null;
+        $this->episodeFileEpisodeAirDatesUTC = $params['sonarr_episodefile_episodeairdatesutc'] ?? null;
+        $this->episodeFileEpisodeCount = $params['sonarr_episodefile_episodecount'] ?? null;
+        $this->episodeFileEpisodeNumbers = $params['sonarr_episodefile_episodenumbers'] ?? null;
+        $this->episodeFileEpisodeTitles = $params['sonarr_episodefile_episodetitles'] ?? null;
+        $this->episodeFileId = $params['sonarr_episodefile_id'] ?? null;
+        $this->episodeFilePath = $params['sonarr_episodefile_path'] ?? null;
+        $this->episodeFileQuality = $params['sonarr_episodefile_quality'] ?? null;
+        $this->episodeFileQualityVersion = $params['sonarr_episodefile_qualityversion'] ?? null;
+        $this->episodeFileRelativePath = $params['sonarr_episodefile_relativepath'] ?? null;
+        $this->episodeFileReleaseGroup = $params['sonarr_episodefile_releasegroup'] ?? null;
+        $this->episodeFileSceneName = $params['sonarr_episodefile_scenename'] ?? null;
+        $this->episodeFileSeasonNumber = $params['sonarr_episodefile_seasonnumber'] ?? null;
+        $this->episodeFileSourceFolder = $params['sonarr_episodefile_sourcefolder'] ?? null;
+        $this->episodeFileSourcePath = $params['sonarr_episodefile_sourcepath'] ?? null;
         $this->downloadId = $params['sonarr_download_id'] ?? null;
+        $this->downloadClient = $params['sonarr_download_client'] ?? null;
+        $this->isUpgrade = $params['sonarr_isupgrade'] ?? null;
     }
 }
