@@ -63,11 +63,11 @@ class Process
             if (file_exists($filename)) {
                 switch ($type) {
                     case 'magnet':
-                        $this->handleMagnetGrabRequest($params, $filename);
+                        $this->handleMagnetGrabRequest($filename);
                         return;
 
                     case 'torrent':
-                        $this->handleTorrentGrabRequest($params, $filename);
+                        $this->handleTorrentGrabRequest($filename);
                         return;
 
                     default:
@@ -80,24 +80,22 @@ class Process
     }
 
     /**
-     * @param \JeremyWorboys\SonarrPutIO\Events\GrabParameters $params
-     * @param string                                           $filename
+     * @param string $filename
      */
-    private function handleMagnetGrabRequest(GrabParameters $params, string $filename)
+    private function handleMagnetGrabRequest(string $filename)
     {
         $magnet = file_get_contents($filename);
-        $this->putio->transfers->add($magnet);
-        $this->appendTransferToList($params->getReleaseTitle());
+        $transfer = $this->putio->transfers->add($magnet);
+        $this->appendTransferToList($transfer['name']);
     }
 
     /**
-     * @param \JeremyWorboys\SonarrPutIO\Events\GrabParameters $params
-     * @param string                                           $filename
+     * @param string $filename
      */
-    private function handleTorrentGrabRequest(GrabParameters $params, string $filename)
+    private function handleTorrentGrabRequest(string $filename)
     {
-        $this->putio->files->upload($filename);
-        $this->appendTransferToList($params->getReleaseTitle());
+        $transfer = $this->putio->files->upload($filename);
+        $this->appendTransferToList($transfer['name']);
     }
 
     /**
@@ -111,10 +109,10 @@ class Process
     private function handleRenameRequest(RenameParameters $params) { }
 
     /**
-     * @param string $filename
+     * @param string $transferName
      */
-    private function appendTransferToList(string $filename)
+    private function appendTransferToList(string $transferName)
     {
-        file_put_contents(__DIR__ . '/../transfers.txt', $filename . PHP_EOL, FILE_APPEND);
+        file_put_contents(__DIR__ . '/../transfers.txt', $transferName . PHP_EOL, FILE_APPEND);
     }
 }
