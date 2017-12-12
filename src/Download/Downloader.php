@@ -40,18 +40,24 @@ class Downloader
      */
     public function run()
     {
+        $remove = [];
         $expected = $this->readTransfersList();
         $uploaded = $this->putio->files->listall();
 
         foreach ($expected as $i => $name) {
             foreach ($uploaded as $file) {
                 if ($file['name'] === $name) {
+                    $remove[] = $i;
                     $this->download($file);
-                    unset($expected[$i]);
-                    $this->writeTransfersList($expected);
                 }
             }
         }
+
+        foreach ($remove as $i) {
+            unset($expected[$i]);
+        }
+
+        $this->writeTransfersList($expected);
     }
 
     /**
