@@ -107,7 +107,7 @@ class Process
 
         foreach ($downloads as $parentId => $files) {
             $lastFile = count($files) === 1;
-            $pathFound = array_search($params->getEpisodeFileSourcePath(), $files, true);
+            $pathFound = in_array($params->getEpisodeFileSourcePath(), $files, true);
 
             if ($pathFound && $lastFile) {
                 $this->putio->files->delete($parentId);
