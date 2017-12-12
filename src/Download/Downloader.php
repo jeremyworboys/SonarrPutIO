@@ -2,6 +2,7 @@
 
 namespace JeremyWorboys\SonarrPutIO\Download;
 
+use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
 use PutIO\API;
 
@@ -18,21 +19,26 @@ class Downloader
     /** @var \JeremyWorboys\SonarrPutIO\Download\LinkFinder */
     private $finder;
 
+    /** @var \JeremyWorboys\SonarrPutIO\Model\TransferRepository */
+    private $transfers;
+
     /** @var string */
     private $root;
 
     /**
      * Downloader constructor.
      *
-     * @param \JeremyWorboys\SonarrPutIO\ProgressiveDownloader $psd
-     * @param \PutIO\API                                       $putio
-     * @param string                                           $root
+     * @param \JeremyWorboys\SonarrPutIO\ProgressiveDownloader    $psd
+     * @param \PutIO\API                                          $putio
+     * @param \JeremyWorboys\SonarrPutIO\Model\TransferRepository $transfers
+     * @param string                                              $root
      */
-    public function __construct(ProgressiveDownloader $psd, API $putio, string $root)
+    public function __construct(ProgressiveDownloader $psd, API $putio, TransferRepository $transfers, string $root)
     {
         $this->psd = $psd;
         $this->putio = $putio;
         $this->finder = new LinkFinder($putio);
+        $this->transfers = $transfers;
         $this->root = $root;
     }
 
@@ -40,24 +46,13 @@ class Downloader
      */
     public function run()
     {
-        $remove = [];
-        $expected = $this->readTransfersList();
-        $uploaded = $this->putio->files->listall();
-
-        foreach ($expected as $i => $name) {
-            foreach ($uploaded as $file) {
-                if ($file['name'] === $name) {
-                    $remove[] = $i;
-                    $this->download($file);
-                }
+        foreach ($this->transfers->all() as $transfer) {
+            $info = $this->putio->transfers->info($transfer->getId());
+            if ($info['status'] === 'SEEDING' || $info['status'] === 'COMPLETED') {
+                $this->download($info['file_id']);
+                $this->transfers->remove($transfer);
             }
         }
-
-        foreach ($remove as $i) {
-            unset($expected[$i]);
-        }
-
-        $this->writeTransfersList($expected);
     }
 
     /**
@@ -81,28 +76,6 @@ class Downloader
                 $this->appendDownloadList((int) $parent['id'], $file);
             }
         }
-    }
-
-    /**
-     * @return array
-     */
-    private function readTransfersList()
-    {
-        $contents = file_get_contents(__DIR__ . '/../../transfers.txt');
-        $lines = explode(PHP_EOL, $contents);
-        $lines = array_map('trim', $lines);
-        $lines = array_filter($lines);
-
-        return $lines;
-    }
-
-    /**
-     * @param array $transfers
-     */
-    private function writeTransfersList(array $transfers)
-    {
-        $contents = implode(PHP_EOL, $transfers) . PHP_EOL;
-        file_put_contents(__DIR__ . '/../../transfers.txt', $contents);
     }
 
     /**
