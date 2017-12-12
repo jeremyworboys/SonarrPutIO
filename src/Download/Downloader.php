@@ -2,30 +2,31 @@
 
 namespace JeremyWorboys\SonarrPutIO\Download;
 
+use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
 use PutIO\API;
 
 class Downloader
 {
+    /** @var \JeremyWorboys\SonarrPutIO\ProgressiveDownloader */
+    private $psd;
+
     /** @var \PutIO\API */
     private $putio;
 
     /** @var \JeremyWorboys\SonarrPutIO\Download\LinkFinder */
     private $finder;
 
-    /** @var string */
-    private $root;
-
     /**
      * Downloader constructor.
      *
-     * @param \PutIO\API $putio
-     * @param string     $root
+     * @param \JeremyWorboys\SonarrPutIO\ProgressiveDownloader $psd
+     * @param \PutIO\API                                       $putio
      */
-    public function __construct(API $putio, string $root)
+    public function __construct(ProgressiveDownloader $psd, API $putio)
     {
+        $this->psd = $psd;
         $this->putio = $putio;
         $this->finder = new LinkFinder($putio);
-        $this->root = $root;
     }
 
     /**
@@ -38,7 +39,7 @@ class Downloader
         foreach ($expected as $i => $name) {
             foreach ($uploaded as $item) {
                 if ($item['name'] === $name) {
-                    $this->download($this->root, $item['id']);
+                    $this->download($item['id']);
                     unset($expected[$i]);
                     $this->writeTransfersList($expected);
                 }
@@ -47,29 +48,16 @@ class Downloader
     }
 
     /**
-     * @param string $path
-     * @param int    $id
+     * @param int $id
      */
-    private function download(string $path, int $id)
+    private function download(int $id)
     {
         $links = $this->finder->getDownloadLinks($id, true);
 
-        $downloaderPath = __DIR__ . '/../../download/download-' . $id . '.php';
-        if (file_exists($downloaderPath)) {
-            return;
+        $this->psd->launchApp();
+        foreach ($links as $link) {
+            $this->psd->addTask($link);
         }
-
-        $downloaderTemplate = file_get_contents(__DIR__ . '/template.txt');
-        $downloaderTemplate = strtr($downloaderTemplate, [
-            '{{id}}'    => $id,
-            '{{path}}'  => $path,
-            '{{links}}' => json_encode($links),
-        ]);
-
-        $logPath = __DIR__ . '/../../logs/download-' . $id . '.log';
-
-        file_put_contents($downloaderPath, $downloaderTemplate);
-        exec("bash -c \"exec nohup php '{$downloaderPath}' >'{$logPath}' 2>&1 &\"");
     }
 
     /**
