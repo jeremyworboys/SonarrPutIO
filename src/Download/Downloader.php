@@ -57,6 +57,8 @@ class Downloader
         foreach ($this->transfers->all() as $transfer) {
             $this->handleTransfer($transfer);
         }
+
+        $this->putio->transfers->clean();
     }
 
     /**
@@ -69,6 +71,8 @@ class Downloader
         if ($transfer) {
             $this->handleTransfer($transfer);
         }
+
+        $this->putio->transfers->clean();
     }
 
     /**
