@@ -60,6 +60,18 @@ class Downloader
     }
 
     /**
+     * @param int $transferId
+     */
+    public function runOnce(int $transferId)
+    {
+        $transfer = $this->transfers->get($transferId);
+
+        if ($transfer) {
+            $this->handleTransfer($transfer);
+        }
+    }
+
+    /**
      * @param \JeremyWorboys\SonarrPutIO\Model\Transfer $transfer
      */
     private function handleTransfer(Transfer $transfer)
