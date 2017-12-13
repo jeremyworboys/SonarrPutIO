@@ -4,6 +4,7 @@ namespace JeremyWorboys\SonarrPutIO\Download;
 
 use JeremyWorboys\SonarrPutIO\Model\Download;
 use JeremyWorboys\SonarrPutIO\Model\DownloadRepository;
+use JeremyWorboys\SonarrPutIO\Model\Transfer;
 use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
 use PutIO\API;
@@ -54,17 +55,25 @@ class Downloader
     public function run()
     {
         foreach ($this->transfers->all() as $transfer) {
-            $info = $this->putio->transfers->info($transfer->getId());
-            $info = $info['transfer'];
+            $this->handleTransfer($transfer);
+        }
+    }
 
-            if ($info['status'] === 'SEEDING') {
-                $this->putio->transfers->cancel($transfer->getId());
-            }
+    /**
+     * @param \JeremyWorboys\SonarrPutIO\Model\Transfer $transfer
+     */
+    private function handleTransfer(Transfer $transfer)
+    {
+        $info = $this->putio->transfers->info($transfer->getId());
+        $info = $info['transfer'];
 
-            if ($info['status'] === 'SEEDING' || $info['status'] === 'COMPLETED') {
-                $this->download($info['file_id']);
-                $this->transfers->remove($transfer);
-            }
+        if ($info['status'] === 'SEEDING') {
+            $this->putio->transfers->cancel($transfer->getId());
+        }
+
+        if ($info['status'] === 'SEEDING' || $info['status'] === 'COMPLETED') {
+            $this->download($info['file_id']);
+            $this->transfers->remove($transfer);
         }
     }
 
