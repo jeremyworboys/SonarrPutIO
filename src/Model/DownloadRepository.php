@@ -2,24 +2,10 @@
 
 namespace JeremyWorboys\SonarrPutIO\Model;
 
-class DownloadRepository
+class DownloadRepository extends AbstractRepository
 {
-    /** @var string */
-    private $filename;
-
     /** @var \JeremyWorboys\SonarrPutIO\Model\Download[] */
     private $downloads;
-
-    /**
-     * DownloadRepository constructor.
-     *
-     * @param string $filename
-     */
-    public function __construct(string $filename)
-    {
-        $this->filename = $filename;
-        $this->loadData();
-    }
 
     /**
      * @return \JeremyWorboys\SonarrPutIO\Model\Download[]
@@ -98,14 +84,10 @@ class DownloadRepository
     }
 
     /**
+     * @param array $lines
      */
-    private function loadData(): void
+    protected function readLines(array $lines): void
     {
-        $contents = file_get_contents($this->filename);
-        $lines = explode(PHP_EOL, $contents);
-        $lines = array_map('trim', $lines);
-        $lines = array_filter($lines);
-
         $this->downloads = [];
         foreach ($lines as $line) {
             [$id, $parentId, $filename] = explode("\t", $line);
@@ -114,15 +96,15 @@ class DownloadRepository
     }
 
     /**
+     * @return array
      */
-    private function flushData(): void
+    protected function writeLines(): array
     {
         $lines = [];
         foreach ($this->downloads as $download) {
             $lines[] = $download->getId() . "\t" . $download->getParentId() . "\t" . $download->getFilename();
         }
 
-        $contents = implode(PHP_EOL, $lines) . PHP_EOL;
-        file_put_contents($this->filename, $contents);
+        return $lines;
     }
 }
