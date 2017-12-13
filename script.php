@@ -2,6 +2,7 @@
 <?php
 
 use JeremyWorboys\SonarrPutIO\Events\Parameters;
+use JeremyWorboys\SonarrPutIO\Model\DownloadRepository;
 use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 use JeremyWorboys\SonarrPutIO\Process;
 
@@ -19,7 +20,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);
 
+$downloads = new DownloadRepository(__DIR__ . '/downloads.txt');
 $transfers = new TransferRepository(__DIR__ . '/transfers.txt');
 
-$process = new Process($putio, $transfers);
+$process = new Process($putio, $downloads, $transfers);
 $process->handleRequest(Parameters::createFromServer());

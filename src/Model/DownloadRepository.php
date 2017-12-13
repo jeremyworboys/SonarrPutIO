@@ -61,6 +61,21 @@ class DownloadRepository
     }
 
     /**
+     * @param string $filename
+     * @return \JeremyWorboys\SonarrPutIO\Model\Download|null
+     */
+    public function getByFilename(string $filename): ?Download
+    {
+        foreach ($this->downloads as $download) {
+            if ($download->getFilename() === $filename) {
+                return $download;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param \JeremyWorboys\SonarrPutIO\Model\Download $download
      */
     public function add(Download $download)
