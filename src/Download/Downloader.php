@@ -55,9 +55,12 @@ class Downloader
     {
         foreach ($this->transfers->all() as $transfer) {
             $info = $this->putio->transfers->info($transfer->getId());
+            $info = $info['transfer'];
+
             if ($info['status'] === 'SEEDING') {
                 $this->putio->transfers->cancel($transfer->getId());
             }
+
             if ($info['status'] === 'SEEDING' || $info['status'] === 'COMPLETED') {
                 $this->download($info['file_id']);
                 $this->transfers->remove($transfer);
