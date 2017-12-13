@@ -66,8 +66,11 @@ class DownloadRepository extends AbstractRepository
      */
     public function add(Download $download)
     {
-        $this->downloads[] = $download;
-        $this->flushData();
+        $this->withWriteLock(function () use ($download) {
+            $this->loadData();
+            $this->downloads[] = $download;
+            $this->flushData();
+        });
     }
 
     /**
@@ -75,12 +78,15 @@ class DownloadRepository extends AbstractRepository
      */
     public function remove(Download $download)
     {
-        $index = array_search($download, $this->downloads, true);
+        $this->withWriteLock(function () use ($download) {
+            $this->loadData();
+            $index = array_search($download, $this->downloads, true);
 
-        if ($index !== false) {
-            unset($this->downloads[$index]);
-            $this->flushData();
-        }
+            if ($index !== false) {
+                unset($this->downloads[$index]);
+                $this->flushData();
+            }
+        });
     }
 
     /**

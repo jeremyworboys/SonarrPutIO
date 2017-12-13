@@ -49,4 +49,21 @@ abstract class AbstractRepository
 
         file_put_contents($this->filename, $contents);
     }
+
+    /**
+     * @param \Closure $callback
+     */
+    protected function withWriteLock(\Closure $callback): void
+    {
+        $lock = $this->filename . '.lock';
+        $fh = fopen($lock, 'c');
+        flock($fh, LOCK_EX);
+
+        $callback();
+
+        unlink($lock);
+        flock($fh, LOCK_UN);
+        fclose($fh);
+        $fh = null;
+    }
 }

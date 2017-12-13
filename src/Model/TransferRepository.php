@@ -35,8 +35,11 @@ class TransferRepository extends AbstractRepository
      */
     public function add(Transfer $transfer)
     {
-        $this->transfers[] = $transfer;
-        $this->flushData();
+        $this->withWriteLock(function () use ($transfer) {
+            $this->loadData();
+            $this->transfers[] = $transfer;
+            $this->flushData();
+        });
     }
 
     /**
@@ -44,12 +47,15 @@ class TransferRepository extends AbstractRepository
      */
     public function remove(Transfer $transfer)
     {
-        $index = array_search($transfer, $this->transfers, true);
+        $this->withWriteLock(function () use ($transfer) {
+            $this->loadData();
+            $index = array_search($transfer, $this->transfers, true);
 
-        if ($index !== false) {
-            unset($this->transfers[$index]);
-            $this->flushData();
-        }
+            if ($index !== false) {
+                unset($this->transfers[$index]);
+                $this->flushData();
+            }
+        });
     }
 
     /**
