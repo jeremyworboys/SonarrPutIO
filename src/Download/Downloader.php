@@ -2,6 +2,8 @@
 
 namespace JeremyWorboys\SonarrPutIO\Download;
 
+use JeremyWorboys\SonarrPutIO\Model\Download;
+use JeremyWorboys\SonarrPutIO\Model\DownloadRepository;
 use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
 use PutIO\API;
@@ -19,6 +21,9 @@ class Downloader
     /** @var \JeremyWorboys\SonarrPutIO\Download\LinkFinder */
     private $finder;
 
+    /** @var \JeremyWorboys\SonarrPutIO\Model\DownloadRepository */
+    private $downloads;
+
     /** @var \JeremyWorboys\SonarrPutIO\Model\TransferRepository */
     private $transfers;
 
@@ -30,14 +35,16 @@ class Downloader
      *
      * @param \JeremyWorboys\SonarrPutIO\ProgressiveDownloader    $psd
      * @param \PutIO\API                                          $putio
+     * @param \JeremyWorboys\SonarrPutIO\Model\DownloadRepository $downloads
      * @param \JeremyWorboys\SonarrPutIO\Model\TransferRepository $transfers
      * @param string                                              $root
      */
-    public function __construct(ProgressiveDownloader $psd, API $putio, TransferRepository $transfers, string $root)
+    public function __construct(ProgressiveDownloader $psd, API $putio, DownloadRepository $downloads, TransferRepository $transfers, string $root)
     {
         $this->psd = $psd;
         $this->putio = $putio;
         $this->finder = new LinkFinder($putio);
+        $this->downloads = $downloads;
         $this->transfers = $transfers;
         $this->root = $root;
     }
@@ -59,11 +66,11 @@ class Downloader
     }
 
     /**
-     * @param array $parent
+     * @param int $parentId
      */
-    private function download(array $parent)
+    private function download(int $parentId)
     {
-        $links = $this->finder->getDownloadLinks($parent['id'], true);
+        $links = $this->finder->getDownloadLinks($parentId, true);
 
         $this->psd->launchApp();
         foreach ($links as $link) {
@@ -76,7 +83,7 @@ class Downloader
                 }
 
                 $this->psd->addTask($link);
-                $this->appendDownloadList((int) $parent['id'], $file);
+                $this->appendDownloadList($parentId, $file);
             }
         }
     }
@@ -87,9 +94,8 @@ class Downloader
      */
     private function appendDownloadList(int $parentId, array $file)
     {
-        $path = $this->root . '/' . $file['name'];
-
-        $contents = $parentId . "\t" . $path . PHP_EOL;
-        file_put_contents(__DIR__ . '/../../downloads.txt', $contents, FILE_APPEND);
+        $filename = $this->root . '/' . $file['name'];
+        $download = new Download($file['id'], $parentId, $filename);
+        $this->downloads->add($download);
     }
 }
