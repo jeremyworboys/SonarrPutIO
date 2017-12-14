@@ -2,8 +2,8 @@
 <?php
 
 use JeremyWorboys\SonarrPutIO\Events\Parameters;
-use JeremyWorboys\SonarrPutIO\Model\DownloadRepository;
-use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
+use JeremyWorboys\SonarrPutIO\Model\FlatFileDownloadRepository;
+use JeremyWorboys\SonarrPutIO\Model\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Process;
 
 $logFile = __DIR__ . '/logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
@@ -20,8 +20,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);
 
-$downloads = new DownloadRepository(__DIR__ . '/downloads.txt');
-$transfers = new TransferRepository(__DIR__ . '/transfers.txt');
+$downloads = new FlatFileDownloadRepository(__DIR__ . '/downloads.txt');
+$transfers = new FlatFileTransferRepository(__DIR__ . '/transfers.txt');
 
 $process = new Process($putio, $downloads, $transfers);
 $process->handleRequest(Parameters::createFromServer());

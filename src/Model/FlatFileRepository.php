@@ -2,7 +2,7 @@
 
 namespace JeremyWorboys\SonarrPutIO\Model;
 
-abstract class AbstractRepository
+abstract class FlatFileRepository
 {
     /** @var string */
     protected $filename;
