@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-use JeremyWorboys\SonarrPutIO\Process;
 use JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters;
 
 $logFile = __DIR__ . '/../logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
@@ -15,9 +14,6 @@ file_put_contents($logFile, json_encode($logData, JSON_PRETTY_PRINT));
 
 $app = require __DIR__ . '/../bootstrap/app.php';
 
-$putio = $app->get('putio');
-$downloads = $app->get('download_repository');
-$transfers = $app->get('transfer_repository');
-
-$process = new Process($putio, $downloads, $transfers);
+/** @var \JeremyWorboys\SonarrPutIO\Process $process */
+$process = $app->get('sonarr_handler');
 $process->handleRequest(Parameters::createFromServer());
