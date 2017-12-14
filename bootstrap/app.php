@@ -1,9 +1,9 @@
 <?php
 
-use JeremyWorboys\SonarrPutIO\Downloader;
+use JeremyWorboys\SonarrPutIO\DownloadHandler;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
-use JeremyWorboys\SonarrPutIO\Process;
+use JeremyWorboys\SonarrPutIO\SonarrHandler;
 use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 use League\Container\Container;
 
@@ -39,7 +39,7 @@ $app->share('transfer_repository', function (Container $app) {
 });
 
 $app->share('sonarr_handler', function (Container $app) {
-    return new Process(
+    return new SonarrHandler(
         $app->get('putio'),
         $app->get('download_repository'),
         $app->get('transfer_repository')
@@ -47,7 +47,7 @@ $app->share('sonarr_handler', function (Container $app) {
 });
 
 $app->share('download_handler', function (Container $app) {
-    return new Downloader(
+    return new DownloadHandler(
         $app->get('putio'),
         $app->get('macpsd'),
         $app->get('download_repository'),

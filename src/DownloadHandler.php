@@ -10,7 +10,7 @@ use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 use JeremyWorboys\SonarrPutIO\Service\PutIO\LinkFinder;
 use PutIO\API;
 
-class Downloader
+class DownloadHandler
 {
     private const MIN_FILE_SIZE = 10000000; // 10 MB
 

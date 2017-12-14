@@ -12,7 +12,7 @@ use JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters;
 use JeremyWorboys\SonarrPutIO\Service\Sonarr\RenameParameters;
 use PutIO\API;
 
-class Process
+class SonarrHandler
 {
     /** @var \PutIO\API */
     private $putio;

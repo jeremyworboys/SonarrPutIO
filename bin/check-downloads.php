@@ -3,6 +3,6 @@
 
 $app = require __DIR__ . '/../bootstrap/app.php';
 
-/** @var \JeremyWorboys\SonarrPutIO\Downloader $downloader */
-$downloader = $app->get('download_handler');
-$downloader->run();
+/** @var \JeremyWorboys\SonarrPutIO\DownloadHandler $handler */
+$handler = $app->get('download_handler');
+$handler->run();
