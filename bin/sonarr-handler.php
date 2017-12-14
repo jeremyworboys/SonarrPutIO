@@ -6,7 +6,7 @@ use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Process;
 
-$logFile = __DIR__ . '/logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
+$logFile = __DIR__ . '/../logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
 $logData = [];
 foreach ($_SERVER as $key => $value) {
     if (strpos($key, 'sonarr_') === 0) {

@@ -4,6 +4,9 @@ use JeremyWorboys\SonarrPutIO\Downloader;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 
+$logFile = __DIR__ . '/../logs/callback-' . time() . '.json';
+file_put_contents($logFile, json_encode($_POST, JSON_PRETTY_PRINT));
+
 $app = require __DIR__ . '/../bootstrap/app.php';
 
 $macPsd = $app->get('macpsd');
