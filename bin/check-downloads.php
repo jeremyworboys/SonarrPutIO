@@ -6,15 +6,15 @@ use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $psd = new ProgressiveDownloader();
 
 $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);
 
-$downloads = new FlatFileDownloadRepository(__DIR__ . '/var/downloads.txt');
-$transfers = new FlatFileTransferRepository(__DIR__ . '/var/transfers.txt');
+$downloads = new FlatFileDownloadRepository(__DIR__ . '/../var/downloads.txt');
+$transfers = new FlatFileTransferRepository(__DIR__ . '/../var/transfers.txt');
 
 $root = '/Users/jeremyworboys/Downloads/Media';
 

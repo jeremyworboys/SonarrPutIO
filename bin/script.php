@@ -15,13 +15,13 @@ foreach ($_SERVER as $key => $value) {
 }
 file_put_contents($logFile, json_encode($logData, JSON_PRETTY_PRINT));
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);
 
-$downloads = new FlatFileDownloadRepository(__DIR__ . '/var/downloads.txt');
-$transfers = new FlatFileTransferRepository(__DIR__ . '/var/transfers.txt');
+$downloads = new FlatFileDownloadRepository(__DIR__ . '/../var/downloads.txt');
+$transfers = new FlatFileTransferRepository(__DIR__ . '/../var/transfers.txt');
 
 $process = new Process($putio, $downloads, $transfers);
 $process->handleRequest(Parameters::createFromServer());
