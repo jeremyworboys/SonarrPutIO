@@ -1,6 +1,9 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Model;
+namespace JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile;
+
+use JeremyWorboys\SonarrPutIO\Model\Download;
+use JeremyWorboys\SonarrPutIO\Model\DownloadRepository;
 
 class FlatFileDownloadRepository extends FlatFileRepository implements DownloadRepository
 {

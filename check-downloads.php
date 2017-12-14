@@ -2,8 +2,8 @@
 <?php
 
 use JeremyWorboys\SonarrPutIO\Download\Downloader;
-use JeremyWorboys\SonarrPutIO\Model\FlatFileDownloadRepository;
-use JeremyWorboys\SonarrPutIO\Model\FlatFileTransferRepository;
+use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
+use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
 
 require_once __DIR__ . '/vendor/autoload.php';

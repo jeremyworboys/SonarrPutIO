@@ -1,6 +1,6 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Model;
+namespace JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile;
 
 abstract class FlatFileRepository
 {

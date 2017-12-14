@@ -2,8 +2,8 @@
 <?php
 
 use JeremyWorboys\SonarrPutIO\Events\Parameters;
-use JeremyWorboys\SonarrPutIO\Model\FlatFileDownloadRepository;
-use JeremyWorboys\SonarrPutIO\Model\FlatFileTransferRepository;
+use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
+use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Process;
 
 $logFile = __DIR__ . '/logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';

@@ -1,6 +1,9 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Model;
+namespace JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile;
+
+use JeremyWorboys\SonarrPutIO\Model\Transfer;
+use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 
 class FlatFileTransferRepository extends FlatFileRepository implements TransferRepository
 {
