@@ -3,6 +3,8 @@
 use JeremyWorboys\SonarrPutIO\DownloadHandler;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
+use JeremyWorboys\SonarrPutIO\SonarrDownloadHandler;
+use JeremyWorboys\SonarrPutIO\SonarrGrabHandler;
 use JeremyWorboys\SonarrPutIO\SonarrHandler;
 use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 use League\Container\Container;
@@ -40,9 +42,22 @@ $app->share('transfer_repository', function (Container $app) {
 
 $app->share('sonarr_handler', function (Container $app) {
     return new SonarrHandler(
+        $app->get('sonarr_handler.grab'),
+        $app->get('sonarr_handler.download')
+    );
+});
+
+$app->share('sonarr_handler.grab', function (Container $app) {
+    return new SonarrGrabHandler(
         $app->get('putio'),
-        $app->get('download_repository'),
         $app->get('transfer_repository')
+    );
+});
+
+$app->share('sonarr_handler.download', function (Container $app) {
+    return new SonarrDownloadHandler(
+        $app->get('putio'),
+        $app->get('download_repository')
     );
 });
 
