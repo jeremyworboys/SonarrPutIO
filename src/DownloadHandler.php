@@ -9,6 +9,7 @@ use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 use JeremyWorboys\SonarrPutIO\Service\PutIO\LinkFinder;
 use PutIO\API;
+use PutIO\Exceptions\RemoteConnectionException;
 
 class DownloadHandler
 {
@@ -81,14 +82,19 @@ class DownloadHandler
      */
     private function handleTransfer(Transfer $transfer)
     {
-        $info = $this->putio->transfers->info($transfer->getId());
-        $info = $info['transfer'];
+        $info = $this->getTransferInfo($transfer);
 
-        if ($info['status'] === 'SEEDING') {
+        if ($info === null) {
+            return;
+        }
+
+        $status = $info['status'];
+
+        if ($status === 'SEEDING') {
             $this->putio->transfers->cancel($transfer->getId());
         }
 
-        if ($info['status'] === 'SEEDING' || $info['status'] === 'COMPLETED') {
+        if ($status === 'SEEDING' || $status === 'COMPLETED') {
             $this->download($info['file_id']);
             $this->transfers->remove($transfer);
         }
@@ -126,5 +132,23 @@ class DownloadHandler
         $filename = $this->root . '/' . $file['name'];
         $download = new Download($file['id'], $parentId, $filename);
         $this->downloads->add($download);
+    }
+
+    /**
+     * @param \JeremyWorboys\SonarrPutIO\Model\Transfer $transfer
+     * @return array
+     */
+    private function getTransferInfo(Transfer $transfer): ?array
+    {
+        try {
+            $info = $this->putio->transfers->info($transfer->getId());
+        } catch (RemoteConnectionException $e) {
+            if ($e->getCode() === 404) {
+                $this->transfers->remove($transfer);
+            }
+            return null;
+        }
+
+        return $info['transfer'];
     }
 }
