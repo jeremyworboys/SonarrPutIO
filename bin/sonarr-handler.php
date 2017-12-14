@@ -15,7 +15,7 @@ foreach ($_SERVER as $key => $value) {
 }
 file_put_contents($logFile, json_encode($logData, JSON_PRETTY_PRINT));
 
-require_once __DIR__ . '/../vendor/autoload.php';
+$app = require __DIR__ . '/../bootstrap/app.php';
 
 $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);

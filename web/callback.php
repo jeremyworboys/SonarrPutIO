@@ -5,7 +5,7 @@ use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+$app = require __DIR__ . '/../bootstrap/app.php';
 
 $macPsd = new ProgressiveDownloader();
 
