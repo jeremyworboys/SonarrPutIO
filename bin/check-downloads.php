@@ -2,16 +2,13 @@
 <?php
 
 use JeremyWorboys\SonarrPutIO\Downloader;
-use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
-use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 
 $app = require __DIR__ . '/../bootstrap/app.php';
 
-$macPsd = $app->get('macpsd');
 $putio = $app->get('putio');
-
-$downloads = new FlatFileDownloadRepository(__DIR__ . '/../var/downloads.txt');
-$transfers = new FlatFileTransferRepository(__DIR__ . '/../var/transfers.txt');
+$macPsd = $app->get('macpsd');
+$downloads = $app->get('download_repository');
+$transfers = $app->get('transfer_repository');
 
 $root = '/Users/jeremyworboys/Downloads/Media';
 

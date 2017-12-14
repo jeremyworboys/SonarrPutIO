@@ -1,10 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters;
-use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
-use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Process;
+use JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters;
 
 $logFile = __DIR__ . '/../logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
 $logData = [];
@@ -18,9 +16,8 @@ file_put_contents($logFile, json_encode($logData, JSON_PRETTY_PRINT));
 $app = require __DIR__ . '/../bootstrap/app.php';
 
 $putio = $app->get('putio');
-
-$downloads = new FlatFileDownloadRepository(__DIR__ . '/../var/downloads.txt');
-$transfers = new FlatFileTransferRepository(__DIR__ . '/../var/transfers.txt');
+$downloads = $app->get('download_repository');
+$transfers = $app->get('transfer_repository');
 
 $process = new Process($putio, $downloads, $transfers);
 $process->handleRequest(Parameters::createFromServer());

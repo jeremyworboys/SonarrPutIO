@@ -1,5 +1,7 @@
 <?php
 
+use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
+use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 use League\Container\Container;
 
@@ -22,6 +24,16 @@ $app->share('putio', function (Container $app) {
     $putio = new PutIO\API($token);
     $putio->setSSLVerifyPeer(false);
     return $putio;
+});
+
+$app->share('download_repository', function (Container $app) {
+    $database = $app->get('config.database_directory') . '/downloads.txt';
+    return new FlatFileDownloadRepository($database);
+});
+
+$app->share('transfer_repository', function (Container $app) {
+    $database = $app->get('config.database_directory') . '/transfers.txt';
+    return new FlatFileTransferRepository($database);
 });
 
 return $app;
