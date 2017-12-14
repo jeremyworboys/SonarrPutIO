@@ -8,9 +8,7 @@ use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository
 $app = require __DIR__ . '/../bootstrap/app.php';
 
 $macPsd = $app->get('macpsd');
-
-$putio = new PutIO\API('***REMOVED***');
-$putio->setSSLVerifyPeer(false);
+$putio = $app->get('putio');
 
 $downloads = new FlatFileDownloadRepository(__DIR__ . '/../var/downloads.txt');
 $transfers = new FlatFileTransferRepository(__DIR__ . '/../var/transfers.txt');

@@ -17,4 +17,11 @@ $app->share('macpsd', function () {
     return new ProgressiveDownloader();
 });
 
+$app->share('putio', function (Container $app) {
+    $token = $app->get('config.putio_token');
+    $putio = new PutIO\API($token);
+    $putio->setSSLVerifyPeer(false);
+    return $putio;
+});
+
 return $app;
