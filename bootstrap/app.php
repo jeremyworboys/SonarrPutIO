@@ -1,5 +1,6 @@
 <?php
 
+use JeremyWorboys\SonarrPutIO\Downloader;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
@@ -34,6 +35,16 @@ $app->share('download_repository', function (Container $app) {
 $app->share('transfer_repository', function (Container $app) {
     $database = $app->get('config.database_directory') . '/transfers.txt';
     return new FlatFileTransferRepository($database);
+});
+
+$app->share('download_handler', function (Container $app) {
+    return new Downloader(
+        $app->get('putio'),
+        $app->get('macpsd'),
+        $app->get('download_repository'),
+        $app->get('transfer_repository'),
+        $app->get('config.media_directory')
+    );
 });
 
 return $app;
