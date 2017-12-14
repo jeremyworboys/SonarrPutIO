@@ -1,6 +1,6 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Events;
+namespace JeremyWorboys\SonarrPutIO\Service\Sonarr;
 
 class RenameParameters extends Parameters
 {

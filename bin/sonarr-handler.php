@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use JeremyWorboys\SonarrPutIO\Events\Parameters;
+use JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
 use JeremyWorboys\SonarrPutIO\Process;

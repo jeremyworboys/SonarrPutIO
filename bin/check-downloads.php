@@ -1,14 +1,14 @@
 #!/usr/bin/env php
 <?php
 
-use JeremyWorboys\SonarrPutIO\Download\Downloader;
+use JeremyWorboys\SonarrPutIO\Downloader;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
-use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
+use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$psd = new ProgressiveDownloader();
+$macPsd = new ProgressiveDownloader();
 
 $putio = new PutIO\API('***REMOVED***');
 $putio->setSSLVerifyPeer(false);
@@ -18,5 +18,5 @@ $transfers = new FlatFileTransferRepository(__DIR__ . '/../var/transfers.txt');
 
 $root = '/Users/jeremyworboys/Downloads/Media';
 
-$downloader = new Downloader($psd, $putio, $downloads, $transfers, $root);
+$downloader = new Downloader($putio, $macPsd, $downloads, $transfers, $root);
 $downloader->run();

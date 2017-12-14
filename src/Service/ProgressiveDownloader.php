@@ -1,6 +1,6 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO;
+namespace JeremyWorboys\SonarrPutIO\Service;
 
 class ProgressiveDownloader
 {

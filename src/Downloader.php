@@ -1,26 +1,27 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Download;
+namespace JeremyWorboys\SonarrPutIO;
 
 use JeremyWorboys\SonarrPutIO\Model\Download;
 use JeremyWorboys\SonarrPutIO\Model\DownloadRepository;
 use JeremyWorboys\SonarrPutIO\Model\Transfer;
 use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
-use JeremyWorboys\SonarrPutIO\ProgressiveDownloader;
+use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
+use JeremyWorboys\SonarrPutIO\Service\PutIO\LinkFinder;
 use PutIO\API;
 
 class Downloader
 {
     private const MIN_FILE_SIZE = 10000000; // 10 MB
 
-    /** @var \JeremyWorboys\SonarrPutIO\ProgressiveDownloader */
-    private $psd;
-
     /** @var \PutIO\API */
     private $putio;
 
-    /** @var \JeremyWorboys\SonarrPutIO\Download\LinkFinder */
+    /** @var \JeremyWorboys\SonarrPutIO\Service\PutIO\LinkFinder */
     private $finder;
+
+    /** @var \JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader */
+    private $macPsd;
 
     /** @var \JeremyWorboys\SonarrPutIO\Model\DownloadRepository */
     private $downloads;
@@ -34,17 +35,17 @@ class Downloader
     /**
      * Downloader constructor.
      *
-     * @param \JeremyWorboys\SonarrPutIO\ProgressiveDownloader    $psd
-     * @param \PutIO\API                                          $putio
-     * @param \JeremyWorboys\SonarrPutIO\Model\DownloadRepository $downloads
-     * @param \JeremyWorboys\SonarrPutIO\Model\TransferRepository $transfers
-     * @param string                                              $root
+     * @param \PutIO\API                                               $putio
+     * @param \JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader $macPsd
+     * @param \JeremyWorboys\SonarrPutIO\Model\DownloadRepository      $downloads
+     * @param \JeremyWorboys\SonarrPutIO\Model\TransferRepository      $transfers
+     * @param string                                                   $root
      */
-    public function __construct(ProgressiveDownloader $psd, API $putio, DownloadRepository $downloads, TransferRepository $transfers, string $root)
+    public function __construct(API $putio, ProgressiveDownloader $macPsd, DownloadRepository $downloads, TransferRepository $transfers, string $root)
     {
-        $this->psd = $psd;
         $this->putio = $putio;
         $this->finder = new LinkFinder($putio);
+        $this->macPsd = $macPsd;
         $this->downloads = $downloads;
         $this->transfers = $transfers;
         $this->root = $root;
@@ -100,7 +101,7 @@ class Downloader
     {
         $links = $this->finder->getDownloadLinks($parentId, true);
 
-        $this->psd->launchApp();
+        $this->macPsd->launchApp();
         foreach ($links as $link) {
             if (preg_match('~/files/(\d+)/download~', $link, $matches)) {
                 $file = $this->putio->files->info($matches[1]);
@@ -110,7 +111,7 @@ class Downloader
                     continue;
                 }
 
-                $this->psd->addTask($link);
+                $this->macPsd->addTask($link);
                 $this->appendDownloadList($parentId, $file);
             }
         }

@@ -2,13 +2,14 @@
 
 namespace JeremyWorboys\SonarrPutIO;
 
-use JeremyWorboys\SonarrPutIO\Events\DownloadParameters;
-use JeremyWorboys\SonarrPutIO\Events\GrabParameters;
-use JeremyWorboys\SonarrPutIO\Events\Parameters;
-use JeremyWorboys\SonarrPutIO\Events\RenameParameters;
 use JeremyWorboys\SonarrPutIO\Model\DownloadRepository;
 use JeremyWorboys\SonarrPutIO\Model\Transfer;
 use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
+use JeremyWorboys\SonarrPutIO\Service\PutIO\TorrentUploader;
+use JeremyWorboys\SonarrPutIO\Service\Sonarr\DownloadParameters;
+use JeremyWorboys\SonarrPutIO\Service\Sonarr\GrabParameters;
+use JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters;
+use JeremyWorboys\SonarrPutIO\Service\Sonarr\RenameParameters;
 use PutIO\API;
 
 class Process
@@ -16,7 +17,7 @@ class Process
     /** @var \PutIO\API */
     private $putio;
 
-    /** @var \JeremyWorboys\SonarrPutIO\TorrentUploader */
+    /** @var \JeremyWorboys\SonarrPutIO\Service\PutIO\TorrentUploader */
     private $uploader;
 
     /** @var \JeremyWorboys\SonarrPutIO\Model\DownloadRepository */
@@ -41,23 +42,23 @@ class Process
     }
 
     /**
-     * @param \JeremyWorboys\SonarrPutIO\Events\Parameters $params
+     * @param \JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters $params
      */
     public function handleRequest(Parameters $params)
     {
         switch ($params->getEventType()) {
             case 'Grab':
-                /** @var \JeremyWorboys\SonarrPutIO\Events\GrabParameters $params */
+                /** @var \JeremyWorboys\SonarrPutIO\Service\Sonarr\GrabParameters $params */
                 $this->handleGrabRequest($params);
                 return;
 
             case 'Download':
-                /** @var \JeremyWorboys\SonarrPutIO\Events\DownloadParameters $params */
+                /** @var \JeremyWorboys\SonarrPutIO\Service\Sonarr\DownloadParameters $params */
                 $this->handleDownloadRequest($params);
                 return;
 
             case 'Rename':
-                /** @var \JeremyWorboys\SonarrPutIO\Events\RenameParameters $params */
+                /** @var \JeremyWorboys\SonarrPutIO\Service\Sonarr\RenameParameters $params */
                 $this->handleRenameRequest($params);
                 return;
 
@@ -67,7 +68,7 @@ class Process
     }
 
     /**
-     * @param \JeremyWorboys\SonarrPutIO\Events\GrabParameters $params
+     * @param \JeremyWorboys\SonarrPutIO\Service\Sonarr\GrabParameters $params
      */
     private function handleGrabRequest(GrabParameters $params)
     {
@@ -116,7 +117,7 @@ class Process
     }
 
     /**
-     * @param \JeremyWorboys\SonarrPutIO\Events\DownloadParameters $params
+     * @param \JeremyWorboys\SonarrPutIO\Service\Sonarr\DownloadParameters $params
      */
     private function handleDownloadRequest(DownloadParameters $params)
     {
@@ -135,7 +136,7 @@ class Process
     }
 
     /**
-     * @param \JeremyWorboys\SonarrPutIO\Events\RenameParameters $params
+     * @param \JeremyWorboys\SonarrPutIO\Service\Sonarr\RenameParameters $params
      */
     private function handleRenameRequest(RenameParameters $params) { }
 

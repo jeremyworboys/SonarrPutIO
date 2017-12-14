@@ -1,6 +1,6 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Events;
+namespace JeremyWorboys\SonarrPutIO\Service\Sonarr;
 
 class DownloadParameters extends Parameters
 {
@@ -448,8 +448,6 @@ class DownloadParameters extends Parameters
     {
         return $this->isUpgrade;
     }
-
-
 
     /**
      * @param array $params

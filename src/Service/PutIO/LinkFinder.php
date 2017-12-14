@@ -1,6 +1,6 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Download;
+namespace JeremyWorboys\SonarrPutIO\Service\PutIO;
 
 use PutIO\Helpers\PutIO\PutIOHelper;
 

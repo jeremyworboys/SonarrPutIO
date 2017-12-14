@@ -1,6 +1,6 @@
 <?php
 
-namespace JeremyWorboys\SonarrPutIO\Events;
+namespace JeremyWorboys\SonarrPutIO\Service\Sonarr;
 
 abstract class Parameters
 {
@@ -13,7 +13,7 @@ abstract class Parameters
     private function __construct() { }
 
     /**
-     * @return \JeremyWorboys\SonarrPutIO\Events\Parameters
+     * @return \JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters
      */
     final public static function createFromServer(): Parameters
     {
@@ -22,7 +22,7 @@ abstract class Parameters
 
     /**
      * @param array $parameters
-     * @return \JeremyWorboys\SonarrPutIO\Events\Parameters
+     * @return \JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters
      */
     final public static function createFromArray(array $parameters): Parameters
     {
@@ -32,7 +32,7 @@ abstract class Parameters
     /**
      * @param string $eventType
      * @param array  $parameters
-     * @return \JeremyWorboys\SonarrPutIO\Events\Parameters
+     * @return \JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters
      */
     private static function create(string $eventType, array $parameters): Parameters
     {
