@@ -33,14 +33,24 @@ $app->share('putio', function () use ($app) {
     return $putio;
 });
 
-$app->share('download_repository', function () use ($app) {
+$app->share('filesystem.download_repository', function () use ($app) {
     $database = $app->get('config.database_directory') . '/downloads.txt';
     return new FlatFileDownloadRepository($database);
 });
 
-$app->share('transfer_repository', function () use ($app) {
+$app->share('filesystem.transfer_repository', function () use ($app) {
     $database = $app->get('config.database_directory') . '/transfers.txt';
     return new FlatFileTransferRepository($database);
+});
+
+$app->share('download_repository', function () use ($app) {
+    $alias = $app->get('config.database_driver') . '.download_repository';
+    return $app->get($alias);
+});
+
+$app->share('transfer_repository', function () use ($app) {
+    $alias = $app->get('config.database_driver') . '.transfer_repository';
+    return $app->get($alias);
 });
 
 $app->share('sonarr_handler', function () use ($app) {
