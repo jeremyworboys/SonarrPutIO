@@ -12,6 +12,9 @@ use League\Container\Container;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $config = require __DIR__ . '/config.php';
+if (file_exists(__DIR__ . '/config.dist.php')) {
+    $config = array_replace($config, require __DIR__ . '/config.dist.php');
+}
 
 $app = new Container();
 $app->add('config', $config);
