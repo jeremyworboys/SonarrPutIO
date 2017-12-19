@@ -33,14 +33,25 @@ $app->share('putio', function () use ($app) {
     return $putio;
 });
 
+$app->share('mysql.connection', function () use ($app) {
+    $dsn = $app->get('config.database_dsn');
+    $username = $app->get('config.database_username');
+    $password = $app->get('config.database_password');
+
+    return new PDO($dsn, $username, $password, [
+        PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_PERSISTENT => false,
+    ]);
+});
+
 $app->share('filesystem.download_repository', function () use ($app) {
-    $database = $app->get('config.database_directory') . '/downloads.txt';
-    return new FlatFileDownloadRepository($database);
+    $filename = $app->get('config.database_directory') . '/downloads.txt';
+    return new FlatFileDownloadRepository($filename);
 });
 
 $app->share('filesystem.transfer_repository', function () use ($app) {
-    $database = $app->get('config.database_directory') . '/transfers.txt';
-    return new FlatFileTransferRepository($database);
+    $filename = $app->get('config.database_directory') . '/transfers.txt';
+    return new FlatFileTransferRepository($filename);
 });
 
 $app->share('download_repository', function () use ($app) {
