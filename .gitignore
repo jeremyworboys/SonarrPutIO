@@ -1,4 +1,4 @@
-/logs/
-/torrents/
+/var/logs/
+/var/torrents/
 /vendor/
 /bootstrap/config.dist.php

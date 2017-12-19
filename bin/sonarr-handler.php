@@ -3,7 +3,7 @@
 
 use JeremyWorboys\SonarrPutIO\Service\Sonarr\Parameters;
 
-$logFile = __DIR__ . '/../logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
+$logFile = __DIR__ . '/../var/logs/' . $_SERVER['sonarr_eventtype'] . '-' . time() . '.json';
 $logData = [];
 foreach ($_SERVER as $key => $value) {
     if (strpos($key, 'sonarr_') === 0) {

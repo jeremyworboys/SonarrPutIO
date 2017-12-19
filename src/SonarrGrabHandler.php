@@ -38,8 +38,8 @@ class SonarrGrabHandler
     public function handleRequest(GrabParameters $params)
     {
         $files = [
-            'magnet'  => __DIR__ . '/../torrents/' . $params->getReleaseTitle() . '.magnet',
-            'torrent' => __DIR__ . '/../torrents/' . $params->getReleaseTitle() . '.torrent',
+            'magnet'  => __DIR__ . '/../var/torrents/' . $params->getReleaseTitle() . '.magnet',
+            'torrent' => __DIR__ . '/../var/torrents/' . $params->getReleaseTitle() . '.torrent',
         ];
 
         foreach ($files as $type => $filename) {
