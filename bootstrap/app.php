@@ -3,6 +3,8 @@
 use JeremyWorboys\SonarrPutIO\DownloadHandler;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileDownloadRepository;
 use JeremyWorboys\SonarrPutIO\Infrastructure\FlatFile\FlatFileTransferRepository;
+use JeremyWorboys\SonarrPutIO\Infrastructure\MySQL\MySQLDownloadRepository;
+use JeremyWorboys\SonarrPutIO\Infrastructure\MySQL\MySQLTransferRepository;
 use JeremyWorboys\SonarrPutIO\Service\ProgressiveDownloader;
 use JeremyWorboys\SonarrPutIO\SonarrDownloadHandler;
 use JeremyWorboys\SonarrPutIO\SonarrGrabHandler;
@@ -42,6 +44,16 @@ $app->share('mysql.connection', function () use ($app) {
         PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_PERSISTENT => false,
     ]);
+});
+
+$app->share('mysql.download_repository', function () use ($app) {
+    $conn = $app->get('mysql.connection');
+    return new MySQLDownloadRepository($conn);
+});
+
+$app->share('mysql.transfer_repository', function () use ($app) {
+    $conn = $app->get('mysql.connection');
+    return new MySQLTransferRepository($conn);
 });
 
 $app->share('filesystem.download_repository', function () use ($app) {
