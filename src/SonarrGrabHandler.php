@@ -6,10 +6,14 @@ use JeremyWorboys\SonarrPutIO\Model\Transfer;
 use JeremyWorboys\SonarrPutIO\Model\TransferRepository;
 use JeremyWorboys\SonarrPutIO\Service\PutIO\TorrentUploader;
 use JeremyWorboys\SonarrPutIO\Service\Sonarr\GrabParameters;
+use Psr\Log\LoggerInterface;
 use PutIO\API;
 
 class SonarrGrabHandler
 {
+    /** @var \Psr\Log\LoggerInterface */
+    private $logger;
+
     /** @var \PutIO\API */
     private $putio;
 
@@ -22,11 +26,13 @@ class SonarrGrabHandler
     /**
      * SonarrGrabHandler constructor.
      *
+     * @param \Psr\Log\LoggerInterface                            $logger
      * @param \PutIO\API                                          $putio
      * @param \JeremyWorboys\SonarrPutIO\Model\TransferRepository $transfers
      */
-    public function __construct(API $putio, TransferRepository $transfers)
+    public function __construct(LoggerInterface $logger, API $putio, TransferRepository $transfers)
     {
+        $this->logger = $logger;
         $this->putio = $putio;
         $this->uploader = new TorrentUploader($putio);
         $this->transfers = $transfers;
@@ -43,13 +49,20 @@ class SonarrGrabHandler
         ];
 
         foreach ($files as $type => $filename) {
+            $this->logger->info('Checking for {type} with filename "{filename}".', [
+                'type'     => $type,
+                'filename' => $filename,
+            ]);
+
             if (file_exists($filename)) {
                 switch ($type) {
                     case 'magnet':
+                        $this->logger->info('Found magnet file.');
                         $this->handleMagnetFile($filename);
                         return;
 
                     case 'torrent':
+                        $this->logger->info('Found torrent file.');
                         $this->handleTorrentFile($filename);
                         return;
 
