@@ -62,17 +62,26 @@ class DownloadHandler
      */
     public function run()
     {
-        $this->logger->info('Running downloader for all transfers.');
-        foreach ($this->transfers->all() as $transfer) {
-            $this->handleTransfer($transfer);
-        }
-
-        $this->logger->info('Checking for completed files.');
+        $this->logger->info('Checking for completed downloads.');
         $iter = new \FilesystemIterator($this->root, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_PATHNAME);
         foreach ($iter as $filename) {
-            if (!substr($filename, -11) === '.psdownload') {
-                $this->markComplete($filename);
+            if (basename($filename) === '.DS_Store') {
+                continue;
             }
+
+            $this->logger->info('Checking download with filename "{filename}".', ['filename' => $filename]);
+
+            if (substr($filename, -11) === '.psdownload') {
+                $this->logger->info('Skipping incomplete download with filename "{filename}".', ['filename' => $filename]);
+                continue;
+            }
+
+            $this->markComplete($filename);
+        }
+
+        $this->logger->info('Checking for completed transfers.');
+        foreach ($this->transfers->all() as $transfer) {
+            $this->handleTransfer($transfer);
         }
 
         $this->logger->info('Cleaning put.io transfer list.');
@@ -141,6 +150,11 @@ class DownloadHandler
             'info'        => $info,
         ]);
         $status = $info['status'];
+
+        if ($status !== 'SEEDING' && $status !== 'COMPLETED') {
+            $this->logger->info('Skipping incomplete transfer.');
+            return;
+        }
 
         if ($status === 'SEEDING') {
             $this->logger->info('Cancelling seeding transfer.');
