@@ -8,4 +8,5 @@ return [
     'database_username'  => '',
     'database_password'  => '',
     'database_directory' => __DIR__ . '/../var',
+    'logs_directory' => __DIR__ . '/../var/logs',
 ];

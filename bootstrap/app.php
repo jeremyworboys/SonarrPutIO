@@ -10,6 +10,9 @@ use JeremyWorboys\SonarrPutIO\SonarrDownloadHandler;
 use JeremyWorboys\SonarrPutIO\SonarrGrabHandler;
 use JeremyWorboys\SonarrPutIO\SonarrHandler;
 use League\Container\Container;
+use Monolog\Handler\FingersCrossedHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -23,6 +26,23 @@ $app->add('config', $config);
 foreach ($config as $key => $value) {
     $app->add('config.' . $key, $value);
 }
+
+$app->share('logger.nested_handler', function () use ($app) {
+    $filename = $app->get('config.logs_directory') . '/' . date('Y-m-d') . '.log';
+    return new StreamHandler($filename, Logger::DEBUG);
+});
+
+$app->share('logger.main_handler', function () use ($app) {
+    $nested = $app->get('logger.nested_handler');
+    return new FingersCrossedHandler($nested, Logger::ERROR);
+});
+
+$app->share('logger', function () use ($app) {
+    $logger = new Logger('app');
+    $logger->useMicrosecondTimestamps(true);
+    $logger->pushHandler($app->get('logger.main_handler'));
+    return $logger;
+});
 
 $app->share('macpsd', function () {
     return new ProgressiveDownloader();
