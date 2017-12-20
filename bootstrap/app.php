@@ -32,6 +32,10 @@ $app->share('logger.psr3_processor', function () {
     return new PsrLogMessageProcessor();
 });
 
+$app->share('logger.console_handler', function () {
+    return new StreamHandler(STDOUT, Logger::DEBUG);
+});
+
 $app->share('logger.nested_handler', function () use ($app) {
     $filename = $app->get('config.logs_directory') . '/' . date('Y-m-d') . '.log';
     $processor = $app->get('logger.psr3_processor');
@@ -54,6 +58,7 @@ $app->share('logger', function () use ($app) {
     $logger = new Logger('app');
     $logger->useMicrosecondTimestamps(true);
     $logger->pushHandler($app->get('logger.main_handler'));
+    $logger->pushHandler($app->get('logger.console_handler'));
     return $logger;
 });
 
