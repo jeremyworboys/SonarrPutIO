@@ -43,8 +43,7 @@ class ApplicationServiceProvider extends AbstractServiceProvider
         $this->container->share('sonarr_handler.download', function () {
             return new SonarrDownloadHandler(
                 $this->container->get('logger'),
-                $this->container->get('putio'),
-                $this->container->get('download_repository')
+                $this->container->get('download_handler')
             );
         });
 

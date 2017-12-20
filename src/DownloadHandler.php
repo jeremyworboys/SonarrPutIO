@@ -92,6 +92,32 @@ class DownloadHandler
     }
 
     /**
+     * @param string $filename
+     */
+    public function markComplete(string $filename)
+    {
+        $download = $this->downloads->getByFilename($filename);
+
+        if ($download) {
+            $this->logger->info('Found download with filename "{filename}".', ['filename' => $filename]);
+            $this->downloads->remove($download);
+
+            $parentId = $download->getParentId();
+            $remaining = count($this->downloads->getByParent($parentId));
+
+            if ($remaining === 0) {
+                $this->logger->info('Removing parent from put.io.', ['parent_id' => $parentId]);
+                $this->putio->files->delete($parentId);
+            } else {
+                $message = $remaining === 1 ? '{count} child still remains for this parent.' : '{count} children still remain for this parent.';
+                $this->logger->info($message, ['count' => $remaining, 'parent_id' => $parentId]);
+            }
+        } else {
+            $this->logger->error('Unable to find download with filename "{filename}".', ['filename' => $filename]);
+        }
+    }
+
+    /**
      * @param \JeremyWorboys\SonarrPutIO\Model\Transfer $transfer
      */
     private function handleTransfer(Transfer $transfer)
