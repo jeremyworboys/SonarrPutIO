@@ -13,6 +13,7 @@ use League\Container\Container;
 use Monolog\Handler\FingersCrossedHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Processor\PsrLogMessageProcessor;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -27,14 +28,26 @@ foreach ($config as $key => $value) {
     $app->add('config.' . $key, $value);
 }
 
+$app->share('logger.psr3_processor', function () {
+    return new PsrLogMessageProcessor();
+});
+
 $app->share('logger.nested_handler', function () use ($app) {
     $filename = $app->get('config.logs_directory') . '/' . date('Y-m-d') . '.log';
-    return new StreamHandler($filename, Logger::DEBUG);
+    $processor = $app->get('logger.psr3_processor');
+
+    $handler = new StreamHandler($filename, Logger::DEBUG);
+    $handler->pushProcessor($processor);
+    return $handler;
 });
 
 $app->share('logger.main_handler', function () use ($app) {
     $nested = $app->get('logger.nested_handler');
-    return new FingersCrossedHandler($nested, Logger::ERROR);
+    $processor = $app->get('logger.psr3_processor');
+
+    $handler = new FingersCrossedHandler($nested, Logger::ERROR);
+    $handler->pushProcessor($processor);
+    return $handler;
 });
 
 $app->share('logger', function () use ($app) {
