@@ -29,7 +29,7 @@ class LoggerServiceProvider extends AbstractServiceProvider
         });
 
         $this->container->share('logger.console_handler', function () {
-            return new StreamHandler(STDOUT, Logger::DEBUG);
+            return new StreamHandler('php://stdout', Logger::DEBUG);
         });
 
         $this->container->share('logger.nested_handler', function () {
