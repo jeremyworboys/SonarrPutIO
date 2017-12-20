@@ -50,6 +50,7 @@ class ApplicationServiceProvider extends AbstractServiceProvider
 
         $this->container->share('download_handler', function () {
             return new DownloadHandler(
+                $this->container->get('logger'),
                 $this->container->get('putio'),
                 $this->container->get('macpsd'),
                 $this->container->get('download_repository'),
