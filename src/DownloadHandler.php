@@ -63,9 +63,16 @@ class DownloadHandler
     public function run()
     {
         $this->logger->info('Running downloader for all transfers.');
-
         foreach ($this->transfers->all() as $transfer) {
             $this->handleTransfer($transfer);
+        }
+
+        $this->logger->info('Checking for completed files.');
+        $iter = new \FilesystemIterator($this->root, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_PATHNAME);
+        foreach ($iter as $filename) {
+            if (!substr($filename, -11) === '.psdownload') {
+                $this->markComplete($filename);
+            }
         }
 
         $this->logger->info('Cleaning put.io transfer list.');
